@@ -1,0 +1,48 @@
+<input type="file" onchange="previewFile()">
+<br>
+<img src="" height="1000" alt="Image preview...">
+
+<script>
+	function previewFile() {
+		var preview = document.querySelector('img'); //selects the query named img
+		var file = document.querySelector('input[type=file]').files[0]; //sames as here
+		var reader = new FileReader();
+
+		reader.onloadend = function () {
+			preview.src = reader.result;
+		}
+
+		if (file) {
+			reader.readAsDataURL(file); //reads the data as a URL
+		} else {
+			preview.src = "";
+		}
+
+		getBase64(file).then(
+			data => {
+				console.log(data);
+
+				var xhr = new XMLHttpRequest();
+				xhr.open('POST', 'https://emotion-recognition-stage.sa-hackathon-01.cluster.extend.sap.cx', true);
+				xhr.setRequestHeader('Content-type', 'application/json');
+				xhr.onload = function () {
+					// do something to response
+					console.log(this.responseText);
+				};
+
+				json = JSON.stringify({ productCode: "batmobile_lower_part", image: "https://am22.akamaized.net/tms/cnt/uploads/2015/08/batman-killer-640x417.png" });
+				xhr.send(json);
+			});
+	}
+
+	function getBase64(file) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => resolve(reader.result);
+			reader.onerror = error => reject(error);
+		});
+	}
+
+	previewFile();  //calls the function named previewFile()
+</script>

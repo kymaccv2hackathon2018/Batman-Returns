@@ -1,0 +1,9 @@
+---
+applications:
+- name: batmanreview
+  buildpack: staticfile_buildpack
+  memory: 64M
+  disk_quota: 32M
+  instances: 1
+  path: .
+
